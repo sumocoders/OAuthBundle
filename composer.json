@@ -1,0 +1,24 @@
+{
+    "name": "sumocoders/oauth-bundle",
+    "type": "symfony-bundle",
+    "require": {
+        "php": "^8.2",
+        "knpuniversity/oauth2-client-bundle": "^2.14",
+        "thenetworg/oauth2-azure": "^2.1",
+        "symfony/security-bundle": "^6.2",
+        "doctrine/doctrine-bundle": "^2.9",
+        "doctrine/orm": "^2.14",
+        "symfony/translation": "^6.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "SumoCoders\\OAuthBundle\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Bjorn Van Acker",
+            "email": "bjorn@sumocoders.be"
+        }
+    ]
+}

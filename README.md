@@ -1,8 +1,8 @@
 ## Create an application in Azure
 
-While creating the app you will need to define all roles that are present in the application. See [Configure the roles](#configure-the-roles).
+When setting up the application a callback url is required. For an Azure application this is the following url: `/connect/azure/check`
 
-Full article: xxx
+While creating the app you will need to define all roles that are present in the application. See [Configure the roles](#configure-the-roles).
 
 ## Configure the roles
 * Go to the [Azure Portal](https://portal.azure.com/#allservices/category/All)
@@ -25,3 +25,54 @@ Full article: [Add app roles to your application and receive them in the token](
 * Add user/groups with the correct role
 
 Full article: [Assign users and groups to roles](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps#assign-users-and-groups-to-roles)
+
+## Configure the application
+Add the needed bundles to your bundles.php file
+
+```php
+return [
+    ...,
+    KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
+    SumoCoders\OAuthBundle\SumoCodersOAuthBundle::class => ['all' => true],
+];
+```
+
+Update your security.yml file to mirror the following config
+    
+```yaml
+security:
+    enable_authenticator_manager: true
+    providers:
+        app_user_provider:
+            entity:
+            class: SumoCoders\OAuthBundle\Entity\User
+            property: externalId
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: app_user_provider
+            custom_authenticators:
+                - SumoCoders\OAuthBundle\Security\AzureAuthenticator
+            logout:
+                path: logout
+                target: home #Your home page
+```
+Add the following ENV variables to your .env file
+
+```dotenv
+AZURE_CLIENT_ID= #Your client id
+AZURE_CLIENT_SECRET= #Your client secret
+AZURE_TENANT_ID= #Your tenant id
+```
+
+## Configure the routes
+Add the following routes to your routes.yaml file
+
+```yaml
+oauth_bundle:
+    resource: '@SumoCodersOAuthBundle/config/routes.yaml'
+    prefix: /
+```
