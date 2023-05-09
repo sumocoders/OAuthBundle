@@ -55,6 +55,10 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
 
                 $roles = $azureUser->claim('roles');
 
+                if ($roles === null) {
+                    $roles = [];
+                }
+
                 $existingUser = $this->userRepository->findOneBy([
                     'externalId' => $azureUser->getId(),
                     'origin' => self::ORIGIN,
