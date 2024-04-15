@@ -69,7 +69,7 @@ class User implements UserInterface
         return array_unique($roles);
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 

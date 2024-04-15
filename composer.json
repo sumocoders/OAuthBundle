@@ -5,10 +5,10 @@
         "php": "^8.2",
         "knpuniversity/oauth2-client-bundle": "^2.14",
         "thenetworg/oauth2-azure": "^2.1",
-        "symfony/security-bundle": "^6.2 || ^7.0",
+        "symfony/security-bundle": "^7.0",
         "doctrine/doctrine-bundle": "^2.9",
         "doctrine/orm": "^2.14",
-        "symfony/translation": "^6.2 || ^7.0"
+        "symfony/translation": "^7.0"
     },
     "autoload": {
         "psr-4": {
