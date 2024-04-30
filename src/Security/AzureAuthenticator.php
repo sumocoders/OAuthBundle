@@ -2,6 +2,7 @@
 
 namespace SumoCoders\OAuthBundle\Security;
 
+use Psr\Log\LoggerInterface;
 use SumoCoders\OAuthBundle\Entity\User;
 use SumoCoders\OAuthBundle\Event\LoginEvent;
 use SumoCoders\OAuthBundle\Repository\UserRepository;
@@ -27,6 +28,7 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
     const ORIGIN = 'azure';
 
     public function __construct(
+        private readonly LoggerInterface $logger,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
@@ -95,6 +97,8 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+        $this->logger->info('User successfully authenticated', ['user' => $token->getUser()]);
+
         return new RedirectResponse(
             $this->router->generate($this->successRoute)
         );
@@ -102,6 +106,8 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
+        $this->logger->error($exception->getMessage(), ['exception' => $exception]);
+
         $this->requestStack->getSession()->getFlashBag()->add(
             'error',
             $this->translator->trans('login.error', [], 'azure')
