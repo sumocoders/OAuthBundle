@@ -1,15 +1,43 @@
 ## Create an application in Azure
 
-When setting up the application a callback url is required. For an Azure application this is the following url: `/connect/azure/check`
+* Go to [Azure Portal]([https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade](https://portal.azure.com/#home))
+* Search for "App registrations"
+* Click "New registration"
+  * Name: The name of the application, eg: the url of the webapplication
+  * Supported account types: select "Accounts in this organizational directory only (... only - single tenant)"
+  * Redirect URI:
+    * platform: web, url: https://xxx/connect/azure/check
+    * platform: web, url: https://xxx.phpXX.sumocoders.eu/connect/azure/check
+    * platform: web, url: https://xxx.wip/connect/azure/check
+* Click "Certificates & Secrets"
+* Click "New client secret"
+  * Description: the url of the webapplication
+  * Expires: 12 months
+* Note down:
+  * Application (client) ID
+  * Directory (tenant) ID
+  * Client secret Value
+  * Client secret ID
 
-While creating the app you will need to define all roles that are present in the application. See [Configure the roles](#configure-the-roles).
+Full article: [Register a Microsoft Entra app and create a service principal](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal)
+
+## Allow the application to be used
+
+When this is done, you still need to allow the users to use this application:
+
+* Go to [Azure Portal]([https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade](https://portal.azure.com/#home))
+* Search for "App registrations"
+* Select the newly created application
+* Select "Security → Permisions" on the left
+* Click "Granty admin consent for ..."
+
+Full article: [Grant tenant-wide admin consent to an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent?pivots=portal)
 
 ## Configure the roles
-* Go to the [Azure Portal](https://portal.azure.com/#allservices/category/All)
-* Search for "Azure Active Directory"
-* Click "App registrations" on the lefthand side
+* Go to the [Azure Portal]([https://portal.azure.com/#allservices/category/All](https://portal.azure.com/#home))
+* Search for "App registrations"
 * Select your created application
-* Click "App roles" on the left.
+* Click "Manage → App roles" on the left.
 * Create a role for each role in your application
 * The field value should match the role defined in your application
 
@@ -18,8 +46,8 @@ Full article: [Add app roles to your application and receive them in the token](
 
 ## Give users a role
 * Go to the [Azure Portal](https://portal.azure.com/#allservices/category/All)
-* Search for "Azure Active Directory"
-* Click "Enterprise applications" on the lef
+* Search for "Microsoft Entra ID"
+* Click "Enterprise applications" on the left
 * Select your created application
 * Select "Users and groups" on the left.
 * Add user/groups with the correct role
