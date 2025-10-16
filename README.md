@@ -1,19 +1,23 @@
 ## Create an application in Azure
 
-* Go to [Azure Portal]([https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade](https://portal.azure.com/#home))
+* Go to [Azure Portal](https://portal.azure.com/)
 * Search for "App registrations"
 * Click "New registration"
   * Name: The name of the application, eg: the url of the webapplication
   * Supported account types: select "Accounts in this organizational directory only (... only - single tenant)"
-  * Redirect URI:
+  * Redirect URI, you will need to add extra urls later on.
     * platform: web, url: https://xxx/connect/azure/check
-    * platform: web, url: https://xxx.phpXX.sumocoders.eu/connect/azure/check
-    * platform: web, url: https://xxx.wip/connect/azure/check
-* Click "Certificates & Secrets"
-* Click "New client secret"
-  * Description: the url of the webapplication
-  * Expires: 12 months
-* Note down:
+  * You will be redirect to the newly created app registration
+  * Note down the Application (client) ID and Dorectory (tenant) ID
+* Click "Redirect URIs" → Click "Add URI" and add the urls provided. And save. Eg:
+    * https://xxx.phpXX.sumocoders.eu/connect/azure/check
+    * https://xxx.wip/connect/azure/check
+* Click "Certificates & Secrets" → Click "New client secret"
+    * Description: the url of the webapplication
+    * Expires: 12 months, or as long as you feel comfortable with
+    * Click "Save"
+    * Note down the Value and Secret ID
+* Provide the following to your integrator:
   * Application (client) ID
   * Directory (tenant) ID
   * Client secret Value
@@ -25,10 +29,10 @@ Full article: [Register a Microsoft Entra app and create a service principal](ht
 
 When this is done, you still need to allow the users to use this application:
 
-* Go to [Azure Portal]([https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade](https://portal.azure.com/#home))
+* Go to [Azure Portal](https://portal.azure.com)
 * Search for "App registrations"
 * Select the newly created application
-* Select "Security → Permisions" on the left
+* Select "Manage → API Permissions" on the left
 * Click "Granty admin consent for ..."
 
 Full article: [Grant tenant-wide admin consent to an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent?pivots=portal)
