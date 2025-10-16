@@ -36,19 +36,22 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
         private readonly ClientRegistry $clientRegistry,
         private readonly UserRepository $userRepository,
         private readonly RouterInterface $router,
+        private readonly string $client = 'azure',
+        private ?string $routePrefix = null,
         private readonly string $successRoute = 'home',
         private readonly string $failureRoute = 'home',
     ) {
+        $this->routePrefix ??= ($this->client === 'azure' ? '' : $this->client . '_');
     }
 
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'connect_azure_check';
+        return $request->attributes->get('_route') === ($this->routePrefix . 'connect_azure_check');
     }
 
     public function authenticate(Request $request): Passport
     {
-        $client = $this->clientRegistry->getClient('azure');
+        $client = $this->clientRegistry->getClient($this->client);
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
@@ -125,7 +128,7 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
-            $this->router->generate('connect_azure_start'),
+            $this->router->generate($this->routePrefix . 'connect_azure_start'),
             Response::HTTP_TEMPORARY_REDIRECT
         );
     }
