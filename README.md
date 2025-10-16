@@ -69,7 +69,6 @@ Update your security.yml file to mirror the following config
     
 ```yaml
 security:
-    enable_authenticator_manager: true
     providers:
         app_user_provider:
             entity:
