@@ -4,7 +4,6 @@ namespace SumoCoders\OAuthBundle\Entity;
 
 use SumoCoders\OAuthBundle\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'user_external_id_origin', columns: ['external_id', 'origin'])]
@@ -38,6 +37,15 @@ class User implements UserInterface
         $this->externalId = $externalId;
         $this->origin = $origin;
         $this->roles = $roles;
+    }
+
+    public static function fromAzure(
+        string $name,
+        string $externalId,
+        string $origin,
+        array $roles
+    ): self {
+        return new self($name, $externalId, $origin, $roles);
     }
 
     public function getId(): ?int

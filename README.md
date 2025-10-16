@@ -96,12 +96,16 @@ Define the extra custom authenticators in services.yaml
 
 The client parameter should be the same as defined in knpu_oauth2_client (see below)
 
+Optionally use a different user class that implements SumoCoders\OAuthBundle\Entity\UserInterface,
+also update the user provider in that case.
+
 ```yaml
 services:
     azure_authenticator_sumocoders:
         class: SumoCoders\OAuthBundle\Security\AzureAuthenticator
         arguments:
             $client: 'sumocoders'
+            $userClass: App\Entity\User\User
 ```
 
 Add the following ENV variables to your .env file
