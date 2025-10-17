@@ -40,7 +40,7 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
         private readonly ClientRegistry $clientRegistry,
-        private readonly EntityManagerInterface $em,
+        private readonly EntityManagerInterface $entityManager,
         private readonly RouterInterface $router,
         private readonly string $userClass = User::class,
         private readonly string $client = 'azure',
@@ -73,14 +73,14 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
                 }
 
                 /** @var ?UserInterface $existingUser */
-                $existingUser = $this->em->getRepository($this->userClass)->findOneBy([
+                $existingUser = $this->entityManager->getRepository($this->userClass)->findOneBy([
                     'externalId' => $azureUser->getId(),
                     'origin' => self::ORIGIN,
                 ]);
 
                 if ($existingUser) {
                     $existingUser->setRoles($roles);
-                    $this->em->flush();
+                    $this->entityManager->flush();
 
                     $this->eventDispatcher->dispatch(
                         new LoginEvent($existingUser, self::ORIGIN)
@@ -96,8 +96,8 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
                     $roles
                 );
 
-                $this->em->persist($user);
-                $this->em->flush();
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
 
                 $this->eventDispatcher->dispatch(
                     new LoginEvent($user, self::ORIGIN)
