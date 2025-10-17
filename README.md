@@ -38,22 +38,24 @@ When this is done, you still need to allow the users to use this application:
 Full article: [Grant tenant-wide admin consent to an application](https://learn.microsoft.com/en-us/azure/active-directory/manage-apps/grant-admin-consent?pivots=portal)
 
 ## Configure the roles
-* Go to the [Azure Portal]([https://portal.azure.com/#allservices/category/All](https://portal.azure.com/#home))
+* Go to the [Azure Portal](https://portal.azure.com)
 * Search for "App registrations"
-* Select your created application
+* Select your application
 * Click "Manage → App roles" on the left.
 * Create a role for each role in your application
-* The field value should match the role defined in your application
+  * display_name: provided value (can be changed to something more readable)
+  * allowed member types: both
+  * value: provided value
+  * enable this app role: yes
 
 Full article: [Add app roles to your application and receive them in the token](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps)
 
-
 ## Give users a role
-* Go to the [Azure Portal](https://portal.azure.com/#allservices/category/All)
+* Go to the [Azure Portal](https://portal.azure.com)
 * Search for "Microsoft Entra ID"
-* Click "Enterprise applications" on the left
+* Click "Manage → Enterprise applications" on the left
 * Select your created application
-* Select "Users and groups" on the left.
+* Select "Manage → Users and groups" on the left.
 * Add user/groups with the correct role
 
 Full article: [Assign users and groups to roles](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-add-app-roles-in-azure-ad-apps#assign-users-and-groups-to-roles)
