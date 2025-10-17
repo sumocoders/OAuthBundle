@@ -16,12 +16,12 @@ interface UserInterface extends SymfonyUserInterface
         array $roles
     ): self;
 
-    public function getName();
+    public function getName(): string;
 
-    public function getExternalId();
+    public function getExternalId(): string;
 
-    public function getOrigin();
+    public function getOrigin(): string;
 
     /** @param string[] $roles */
-    public function setRoles(array $roles);
+    public function setRoles(array $roles): void;
 }
