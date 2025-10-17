@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -25,7 +26,7 @@ use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 
 class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
-    const ORIGIN = 'azure';
+    public const ORIGIN = 'azure';
 
     public function __construct(
         private readonly LoggerInterface $logger,
@@ -108,10 +109,13 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
     {
         $this->logger->error($exception->getMessage(), ['exception' => $exception]);
 
-        $this->requestStack->getSession()->getFlashBag()->add(
-            'error',
-            $this->translator->trans('login.error', [], 'azure')
-        );
+        $session = $this->requestStack->getSession();
+        if ($session instanceof FlashBagAwareSessionInterface) {
+            $session->getFlashBag()->add(
+                'error',
+                $this->translator->trans('login.error', [], 'azure')
+            );
+        }
 
         return new RedirectResponse(
             $this->router->generate($this->failureRoute)

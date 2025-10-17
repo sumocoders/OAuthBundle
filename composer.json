@@ -7,7 +7,7 @@
         "thenetworg/oauth2-azure": "^2.1",
         "symfony/security-bundle": "^7.0",
         "doctrine/doctrine-bundle": "^2.9",
-        "doctrine/orm": "^2.14",
+        "doctrine/orm": "^2.14 || ^3.3",
         "symfony/translation": "^7.0"
     },
     "autoload": {

@@ -75,7 +75,6 @@ Update your security.yml file to mirror the following config
     
 ```yaml
 security:
-    enable_authenticator_manager: true
     providers:
         app_user_provider:
             entity:
@@ -99,7 +98,7 @@ Add the following ENV variables to your .env file
 ```dotenv
 AZURE_CLIENT_ID= #Your client id
 AZURE_CLIENT_SECRET= #Your client secret
-AZURE_TENANT_ID= #Your tenant id
+AZURE_TENANT= #Your tenant id
 ```
 
 ## Configure the routes
