@@ -11,10 +11,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class AzureController extends AbstractController
 {
     #[Route('/connect/azure', name: 'connect_azure_start')]
-    public function connectAction(ClientRegistry $clientRegistry): RedirectResponse
+    public function connectAction(Request $request, ClientRegistry $clientRegistry): RedirectResponse
     {
+        $prefix = substr($request->attributes->get('_route'), 0, -20);
         return $clientRegistry
-            ->getClient('azure')
+            ->getClient($prefix === '' ? 'azure' : $prefix)
             ->redirect(
                 [
                     "openid",

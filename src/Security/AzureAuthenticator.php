@@ -2,8 +2,11 @@
 
 namespace SumoCoders\OAuthBundle\Security;
 
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 use Psr\Log\LoggerInterface;
 use SumoCoders\OAuthBundle\Entity\User;
+use SumoCoders\OAuthBundle\Entity\UserInterface;
 use SumoCoders\OAuthBundle\Event\LoginEvent;
 use SumoCoders\OAuthBundle\Repository\UserRepository;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
@@ -28,27 +31,34 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
 {
     public const ORIGIN = 'azure';
 
+    /**
+     * @param class-string<UserInterface> $userClass
+     */
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly RequestStack $requestStack,
         private readonly TranslatorInterface $translator,
         private readonly ClientRegistry $clientRegistry,
-        private readonly UserRepository $userRepository,
+        private readonly EntityManagerInterface $entityManager,
         private readonly RouterInterface $router,
+        private readonly string $userClass = User::class,
+        private readonly string $client = 'azure',
+        private ?string $routePrefix = null,
         private readonly string $successRoute = 'home',
         private readonly string $failureRoute = 'home',
     ) {
+        $this->routePrefix ??= ($this->client === 'azure' ? '' : $this->client . '_');
     }
 
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') === 'connect_azure_check';
+        return $request->attributes->get('_route') === ($this->routePrefix . 'connect_azure_check');
     }
 
     public function authenticate(Request $request): Passport
     {
-        $client = $this->clientRegistry->getClient('azure');
+        $client = $this->clientRegistry->getClient($this->client);
         $accessToken = $this->fetchAccessToken($client);
 
         return new SelfValidatingPassport(
@@ -62,14 +72,15 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
                     $roles = [];
                 }
 
-                $existingUser = $this->userRepository->findOneBy([
+                /** @var ?UserInterface $existingUser */
+                $existingUser = $this->entityManager->getRepository($this->userClass)->findOneBy([
                     'externalId' => $azureUser->getId(),
                     'origin' => self::ORIGIN,
                 ]);
 
                 if ($existingUser) {
                     $existingUser->setRoles($roles);
-                    $this->userRepository->save($existingUser, true);
+                    $this->entityManager->flush();
 
                     $this->eventDispatcher->dispatch(
                         new LoginEvent($existingUser, self::ORIGIN)
@@ -78,14 +89,15 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
                     return $existingUser;
                 }
 
-                $user = new User(
+                $user = $this->userClass::fromAzure(
                     $azureUser->claim('preferred_username'),
                     $azureUser->getId(),
                     self::ORIGIN,
                     $roles
                 );
 
-                $this->userRepository->save($user, true);
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
 
                 $this->eventDispatcher->dispatch(
                     new LoginEvent($user, self::ORIGIN)
@@ -125,7 +137,7 @@ class AzureAuthenticator extends OAuth2Authenticator implements AuthenticationEn
     public function start(Request $request, ?AuthenticationException $authException = null): Response
     {
         return new RedirectResponse(
-            $this->router->generate('connect_azure_start'),
+            $this->router->generate($this->routePrefix . 'connect_azure_start'),
             Response::HTTP_TEMPORARY_REDIRECT
         );
     }

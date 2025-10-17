@@ -2,7 +2,7 @@
 
 namespace SumoCoders\OAuthBundle\Event;
 
-use SumoCoders\OAuthBundle\Entity\User;
+use SumoCoders\OAuthBundle\Entity\UserInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class LoginEvent extends Event
@@ -10,12 +10,12 @@ class LoginEvent extends Event
     public const NAME = 'sumocoders.oauth.login';
 
     public function __construct(
-        private readonly User $user,
+        private readonly UserInterface $user,
         private readonly string $origin,
     ) {
     }
 
-    public function getUser(): User
+    public function getUser(): UserInterface
     {
         return $this->user;
     }
